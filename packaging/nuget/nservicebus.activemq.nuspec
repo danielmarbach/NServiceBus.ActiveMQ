@@ -15,12 +15,12 @@
     <copyright>Copyright 2010-2013 NServiceBus. All rights reserved</copyright>
     <tags>nservicebus servicebus msmq cqrs publish subscribe</tags>
     <dependencies>
-      <dependency id="NServiceBus" version="[4.0.4, 5.0)" />
-      <dependency id="Apache.NMS" version="[1.5.1, 2.0)" />
+      <dependency id="Apache.NMS" version="[1.5.1.0, 2.0.0.0)" />
       <dependency id="Costura.Fody" version="0.5.2.0" />
       <dependency id="Fody" version="[1.17.0.0, 2.0.0.0)" />
       <dependency id="GitFlowVersion.Fody" version="[0.1.13.0, 1.0.0.0)" />
       <dependency id="Janitor.Fody" version="[0.3.0.0, 1.0.0.0)" />
+      <dependency id="NServiceBus" version="4.1.0.0-unstable3385" />
       <dependency id="NServiceBus.Interfaces" version="4.1.0.0-unstable3385" />
     </dependencies>
   </metadata>

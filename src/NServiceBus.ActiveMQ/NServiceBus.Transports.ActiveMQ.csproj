@@ -136,6 +136,7 @@
     <Compile Include="TopicEvaluator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="ripple.dependencies.config">
       <SubType>Designer</SubType>
     </None>

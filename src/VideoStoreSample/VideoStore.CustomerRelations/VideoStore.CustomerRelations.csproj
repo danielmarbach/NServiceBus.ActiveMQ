@@ -37,9 +37,6 @@
     <Reference Include="Apache.NMS">
       <HintPath>..\..\packages\Apache.NMS\lib\net40\Apache.NMS.dll</HintPath>
     </Reference>
-    <Reference Include="NServiceBus.Transports.ActiveMQ">
-      <HintPath>..\..\NServiceBus.ActiveMQ\obj\Debug\NServiceBus.Transports.ActiveMQ.dll</HintPath>
-    </Reference>
     <Reference Include="NServiceBus.Core">
       <HintPath>..\..\packages\NServiceBus\lib\net40\NServiceBus.Core.dll</HintPath>
     </Reference>
@@ -85,6 +82,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\NServiceBus.ActiveMQ\NServiceBus.Transports.ActiveMQ.csproj">
+      <Project>{6fc67824-b465-4796-828e-76e5bf4f0d54}</Project>
+      <Name>NServiceBus.Transports.ActiveMQ</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VideoStore.Messages\VideoStore.Messages.csproj">
       <Project>{59f2ba7e-4da5-49f8-9dbc-520fa99f4679}</Project>
       <Name>VideoStore.Messages</Name>

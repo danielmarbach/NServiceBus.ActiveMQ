@@ -46,7 +46,7 @@
       <HintPath>..\packages\Apache.NMS\lib\net40\Apache.NMS.dll</HintPath>
     </Reference>
     <Reference Include="Apache.NMS.ActiveMQ">
-      <HintPath>..\..\lib\Apache.NMS-CustomBuild\Apache.NMS.ActiveMQ.dll</HintPath>
+      <HintPath>..\..\lib\Apache.NMS.ActiveMQ\Apache.NMS.ActiveMQ.dll</HintPath>
     </Reference>
     <Reference Include="Janitor">
       <HintPath>..\packages\Janitor.Fody\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Janitor.dll</HintPath>

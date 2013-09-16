@@ -35,7 +35,7 @@
       <HintPath>..\..\packages\NServiceBus.Interfaces\lib\net40\NServiceBus.dll</HintPath>
     </Reference>
     <Reference Include="Apache.NMS">
-      <HintPath>..\packages\Apache.NMS.1.5.1\lib\net40\Apache.NMS.dll</HintPath>
+      <HintPath>..\..\packages\Apache.NMS\lib\net40\Apache.NMS.dll</HintPath>
     </Reference>
     <Reference Include="NServiceBus.Transports.ActiveMQ">
       <HintPath>..\..\NServiceBus.ActiveMQ\obj\Debug\NServiceBus.Transports.ActiveMQ.dll</HintPath>

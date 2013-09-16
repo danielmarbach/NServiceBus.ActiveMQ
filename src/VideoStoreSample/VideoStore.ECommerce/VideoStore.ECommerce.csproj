@@ -209,11 +209,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config">
-      <SubType>Designer</SubType>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\NServiceBus.ActiveMQ\NServiceBus.Transports.ActiveMQ.csproj">
       <Project>{6fc67824-b465-4796-828e-76e5bf4f0d54}</Project>
       <Name>NServiceBus.Transports.ActiveMQ</Name>
@@ -230,6 +225,9 @@
   <ItemGroup>
     <Content Include="Views\Home\Index.cshtml">
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -263,5 +261,5 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="..\..\packages\RippleRestoreTask.0.1.3\build\RippleRestoreTask.targets" Condition="Exists('..\..\packages\RippleRestoreTask.0.1.3\build\RippleRestoreTask.targets')" />
+  <Import Project="..\..\packages\RippleRestoreTask.0.1.4\build\RippleRestoreTask.targets" Condition="Exists('..\..\packages\RippleRestoreTask.0.1.4\build\RippleRestoreTask.targets')" />
 </Project>

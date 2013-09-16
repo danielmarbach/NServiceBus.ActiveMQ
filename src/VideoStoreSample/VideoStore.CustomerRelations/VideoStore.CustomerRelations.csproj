@@ -82,6 +82,7 @@
   <ItemGroup>
     <None Include="App.config">
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VideoStore.Messages\VideoStore.Messages.csproj">

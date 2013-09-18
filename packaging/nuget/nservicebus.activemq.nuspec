@@ -21,7 +21,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\src\NServiceBus.ActiveMQ\bin\debug\NServiceBus.Transports.ActiveMQ.???" target="lib\net40" />
+    <file src="..\..\src\NServiceBus.ActiveMQ\bin\release\NServiceBus.Transports.ActiveMQ.???" target="lib\net40" />
     <file src="..\..\lib\Apache.NMS.ActiveMQ\Apache.NMS.ActiveMQ.???" target="lib\net40" />
     <file src="tools\**" target="tools" />
     <file src="..\..\src\**\*.cs" target="src" />

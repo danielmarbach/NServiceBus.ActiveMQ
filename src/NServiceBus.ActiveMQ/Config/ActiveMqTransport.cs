@@ -132,13 +132,14 @@
 
         static void RegisterDTCManagedTransactionSessionFactory(int maxRetries, Dictionary<string, string> connectionConfiguration)
         {
-            NetTxConnection.ConfiguredResourceManagerId = connectionConfiguration.ContainsKey(ResourceManagerIdKey) 
+            var ressourceManagerId = connectionConfiguration.ContainsKey(ResourceManagerIdKey) 
                 ? new Guid(connectionConfiguration[ResourceManagerIdKey])
                 : DefaultResourceManagerId;
             var connectionFactory = new NetTxConnectionFactory(connectionConfiguration[UriKey])
             {
                 AcknowledgementMode = AcknowledgementMode.Transactional,
-                RedeliveryPolicy = new RedeliveryPolicy { MaximumRedeliveries = maxRetries, BackOffMultiplier = 0, UseExponentialBackOff = false }
+                RedeliveryPolicy = new RedeliveryPolicy { MaximumRedeliveries = maxRetries, BackOffMultiplier = 0, UseExponentialBackOff = false },
+                ConfiguredResourceManagerId = ressourceManagerId.ToString()
             };
             var pooledSessionFactory = new PooledSessionFactory(connectionFactory);
             var sessionFactory = new DTCTransactionSessionFactory(pooledSessionFactory);

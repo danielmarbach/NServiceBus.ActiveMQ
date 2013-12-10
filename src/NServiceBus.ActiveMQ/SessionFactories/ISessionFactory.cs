@@ -5,6 +5,8 @@
 
     public interface ISessionFactory : IDisposable
     {
+        string GetClientId(ISession session);
+
         ISession GetSession();
 
         void Release(ISession session);

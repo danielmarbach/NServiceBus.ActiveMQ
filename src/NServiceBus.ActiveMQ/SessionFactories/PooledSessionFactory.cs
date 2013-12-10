@@ -15,6 +15,11 @@
             this.connectionFactory = connectionFactory;
         }
 
+        public string GetClientId(ISession session)
+        {
+            return this.connections[session].ClientId;
+        }
+
         public virtual ISession GetSession()
         {
             ISession session;

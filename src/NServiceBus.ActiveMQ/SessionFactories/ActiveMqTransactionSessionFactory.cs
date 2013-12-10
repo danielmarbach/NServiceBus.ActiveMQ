@@ -14,6 +14,11 @@
             this.pooledSessionFactory = pooledSessionFactory;
         }
 
+        public string GetClientId(ISession session)
+        {
+            return pooledSessionFactory.GetClientId(session);
+        }
+
         public ISession GetSession()
         {
             ISession session;

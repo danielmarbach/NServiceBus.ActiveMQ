@@ -23,11 +23,6 @@
             return result;
         }
 
-        public string GetClientId(ISession session)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public ISession GetSession()
         {
             return sessions.Dequeue();

@@ -23,21 +23,22 @@
             var session = sessionFactory.GetSession();
             try
             {
-                var jmsMessage = activeMqMessageMapper.CreateJmsMessage(message, session);
-
                 using (var producer = session.CreateProducer())
                 {
+                    var producerId = this.GetProducerId(producer);
+                    var jmsMessage = activeMqMessageMapper.CreateJmsMessage(message, session, producerId);
                     producer.Send(destinationEvaluator.GetDestination(session, destination, destinationPrefix), jmsMessage);
                 }
-
-                // We assign here the Id to the underlying id which was chosen by the broker.
-                // TODO: Why do we need this daniel/remo?
-                //message.Id = jmsMessage.NMSMessageId;
             }
             finally
             {
                 sessionFactory.Release(session);
             }
-        }        
+        }
+
+        protected virtual string GetProducerId(Apache.NMS.IMessageProducer producer)
+        {
+            return ((Apache.NMS.ActiveMQ.MessageProducer)producer).ProducerId.ToString();
+        }
     }
 }

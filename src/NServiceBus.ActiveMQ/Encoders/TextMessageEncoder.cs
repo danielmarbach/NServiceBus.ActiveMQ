@@ -7,6 +7,11 @@
     {
         public IMessage Encode(TransportMessage message, ISession session)
         {
+            if (!message.Headers.ContainsKey(Headers.ContentType))
+            {
+                return null;
+            }
+
             var contentType = message.Headers[Headers.ContentType];
 
             if (contentType == ContentTypes.Json || contentType == ContentTypes.Xml)

@@ -20,7 +20,6 @@
         private Mock<IMessageTypeInterpreter> messageTypeInterpreter;
         private Mock<IActiveMqMessageDecoderPipeline> decoderPipeline;
         private Mock<IActiveMqMessageEncoderPipeline> encoderPipeline;
-        private Mock<ISessionFactory> sessionFactory;
 
         Mock<IMessageSerializer> serializer;
 
@@ -33,9 +32,8 @@
             messageTypeInterpreter = new Mock<IMessageTypeInterpreter>();
             encoderPipeline = new Mock<IActiveMqMessageEncoderPipeline>();
             decoderPipeline = new Mock<IActiveMqMessageDecoderPipeline>();
-            sessionFactory = new Mock<ISessionFactory>();
 
-            testee = new ActiveMqMessageMapper(serializer.Object, messageTypeInterpreter.Object, encoderPipeline.Object, decoderPipeline.Object, sessionFactory.Object);
+            testee = new ActiveMqMessageMapper(serializer.Object, messageTypeInterpreter.Object, encoderPipeline.Object, decoderPipeline.Object);
         }
 
         [Test]
@@ -45,7 +43,7 @@
 
             var transportMessage = CreateTransportMessage();
 
-            testee.CreateJmsMessage(transportMessage, session.Object);
+            testee.CreateJmsMessage(transportMessage, session.Object, string.Empty);
 
             encoderPipeline.Verify(e => e.Encode(transportMessage, session.Object));
         }
@@ -58,7 +56,7 @@
             var transportMessage = CreateTransportMessage();
             transportMessage.Headers[Headers.EnclosedMessageTypes] = typeof(string).AssemblyQualifiedName;
 
-            var message = testee.CreateJmsMessage(transportMessage, session.Object);
+            var message = testee.CreateJmsMessage(transportMessage, session.Object, string.Empty);
 
             message.NMSType.Should().Be("System.String");
         }
@@ -71,7 +69,7 @@
             var transportMessage = CreateTransportMessage();
             transportMessage.Headers[Headers.EnclosedMessageTypes] = string.Format("{0};{1}", typeof(string).AssemblyQualifiedName, typeof(int).AssemblyQualifiedName);
 
-            var message = testee.CreateJmsMessage(transportMessage, session.Object);
+            var message = testee.CreateJmsMessage(transportMessage, session.Object, string.Empty);
 
             message.NMSType.Should().Be("System.String");
         }
@@ -166,7 +164,7 @@
             var message = CreateTextMessage(string.Empty);
             message.Properties[Headers.EnclosedMessageTypes] = EnclosedMessageTypes;
             message.NMSMessageId = "1";
-            message.Properties[ActiveMqMessageMapper.ClientIdHeader] = "3";
+            message.Properties[ActiveMqMessageMapper.ProducerIdHeader] = "3";
 
             var result = testee.CreateTransportMessage(message);
 
@@ -181,7 +179,7 @@
             var message = CreateTextMessage(string.Empty);
             message.Properties[Headers.EnclosedMessageTypes] = EnclosedMessageTypes;
             message.NMSMessageId = "1:2";
-            message.Properties[ActiveMqMessageMapper.ClientIdHeader] = "1";
+            message.Properties[ActiveMqMessageMapper.ProducerIdHeader] = "1";
 
             var result = testee.CreateTransportMessage(message);
 

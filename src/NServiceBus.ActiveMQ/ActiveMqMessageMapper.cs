@@ -13,32 +13,29 @@ namespace NServiceBus.Transports.ActiveMQ
     public class ActiveMqMessageMapper : IActiveMqMessageMapper
     {
         public const string ErrorCodeKey = "ErrorCode";
-        public const string ClientIdHeader = "NServiceBus.ActiveMq.ClientId";
+        public const string ProducerIdHeader = "NServiceBus.ActiveMq.ProducerId";
 
         readonly IMessageSerializer serializer;
 
         private readonly IMessageTypeInterpreter messageTypeInterpreter;
         private readonly IActiveMqMessageEncoderPipeline encoderPipeline;
         private readonly IActiveMqMessageDecoderPipeline decoderPipeline;
-        private readonly ISessionFactory sessionFactory;
 
         public ActiveMqMessageMapper(
             IMessageSerializer serializer, 
             IMessageTypeInterpreter messageTypeInterpreter, 
             IActiveMqMessageEncoderPipeline encoderPipeline, 
-            IActiveMqMessageDecoderPipeline decoderPipeline,
-            ISessionFactory sessionFactory)
+            IActiveMqMessageDecoderPipeline decoderPipeline)
         {
             this.serializer = serializer;
             this.messageTypeInterpreter = messageTypeInterpreter;
             this.encoderPipeline = encoderPipeline;
             this.decoderPipeline = decoderPipeline;
-            this.sessionFactory = sessionFactory;
         }
 
-        public IMessage CreateJmsMessage(TransportMessage message, ISession session)
+        public IMessage CreateJmsMessage(TransportMessage message, ISession session, string producerId)
         {
-            message.Headers[ClientIdHeader] = sessionFactory.GetClientId(session);
+            message.Headers[ProducerIdHeader] = producerId;
             var jmsmessage = encoderPipeline.Encode(message, session);
 
             // We only assign the correlation id because the message id is chosen by the broker.
@@ -73,8 +70,8 @@ namespace NServiceBus.Transports.ActiveMQ
         {
             var headers = ExtractHeaders(message);
             var transportMessage = new TransportMessage(message.NMSMessageId, headers);
-            if (transportMessage.Headers.ContainsKey(ClientIdHeader) &&
-                !message.NMSMessageId.StartsWith(transportMessage.Headers[ClientIdHeader]))
+            if (transportMessage.Headers.ContainsKey(ProducerIdHeader) &&
+                !message.NMSMessageId.StartsWith(transportMessage.Headers[ProducerIdHeader]))
             {
                 this.DiscardNServiceBusHeadersCopiedByNativeClient(transportMessage);
             }

@@ -53,13 +53,11 @@
       <HintPath>..\packages\Janitor.Fody\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Janitor.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NServiceBus, Version=4.2.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NServiceBus.Interfaces.4.2.0\lib\net40\NServiceBus.dll</HintPath>
+    <Reference Include="NServiceBus">
+      <HintPath>..\packages\NServiceBus.Interfaces\lib\net40\NServiceBus.dll</HintPath>
     </Reference>
-    <Reference Include="NServiceBus.Core, Version=4.2.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NServiceBus.4.2.0\lib\net40\NServiceBus.Core.dll</HintPath>
+    <Reference Include="NServiceBus.Core">
+      <HintPath>..\packages\NServiceBus\lib\net40\NServiceBus.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -139,7 +137,6 @@
     <Compile Include="TopicEvaluator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="ripple.dependencies.config">
       <SubType>Designer</SubType>
     </None>

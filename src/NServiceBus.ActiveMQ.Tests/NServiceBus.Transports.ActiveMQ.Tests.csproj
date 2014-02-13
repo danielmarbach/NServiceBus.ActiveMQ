@@ -36,7 +36,7 @@
       <HintPath>..\packages\Apache.NMS\lib\net40\Apache.NMS.dll</HintPath>
     </Reference>
     <Reference Include="Apache.NMS.ActiveMQ">
-      <HintPath>..\..\lib\Apache.NMS.ActiveMQ\Apache.NMS.ActiveMQ.dll</HintPath>
+      <HintPath>..\packages\Apache.NMS.ActiveMQ\lib\net40\Apache.NMS.ActiveMQ.dll</HintPath>
     </Reference>
     <Reference Include="FluentAssertions">
       <HintPath>..\packages\FluentAssertions\lib\net40\FluentAssertions.dll</HintPath>
@@ -49,7 +49,6 @@
       <HintPath>..\packages\NServiceBus.Interfaces\lib\net40\NServiceBus.dll</HintPath>
     </Reference>
     <Reference Include="NServiceBus.Core">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NServiceBus\lib\net40\NServiceBus.Core.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">

@@ -6,8 +6,6 @@ namespace NServiceBus.Transports.ActiveMQ
     using Apache.NMS;
     using Apache.NMS.Util;
 
-    using NServiceBus.Transports.ActiveMQ.SessionFactories;
-
     using Serialization;
 
     public class ActiveMqMessageMapper : IActiveMqMessageMapper

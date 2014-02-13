@@ -4,6 +4,6 @@ namespace NServiceBus.Transports.ActiveMQ
 
     public interface ITopicEvaluator
     {
-        string GetTopicFromMessageType(Type type);
+        Address GetTopicFromMessageType(Type type);
     }
 }

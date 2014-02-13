@@ -4,9 +4,9 @@ namespace NServiceBus.Transports.ActiveMQ
 
     public class TopicEvaluator : ITopicEvaluator
     {
-        public string GetTopicFromMessageType(Type type)
+        public Address GetTopicFromMessageType(Type type)
         {
-            return "VirtualTopic." + type.FullName;
+            return Address.Parse(string.Format("topic://VirtualTopic.{0}", type.FullName));
         }
     }
 }

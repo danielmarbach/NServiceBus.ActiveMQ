@@ -7,12 +7,12 @@
     public class ActiveMqMessagePublisher : IPublishMessages
     {
         private readonly ITopicEvaluator topicEvaluator;
-        private readonly IMessageProducer messageProducer;
+        private readonly ISendMessages messageSender;
 
-        public ActiveMqMessagePublisher(ITopicEvaluator topicEvaluator, IMessageProducer messageProducer)
+        public ActiveMqMessagePublisher(ITopicEvaluator topicEvaluator, ISendMessages messageSender)
         {
             this.topicEvaluator = topicEvaluator;
-            this.messageProducer = messageProducer;
+            this.messageSender = messageSender;
         }
 
         public bool Publish(TransportMessage message, IEnumerable<Type> eventTypes)
@@ -20,7 +20,7 @@
             var eventType = eventTypes.First(); //we route on the first event for now
 
             var topic = topicEvaluator.GetTopicFromMessageType(eventType);
-            messageProducer.SendMessage(message, topic, "topic://");
+            this.messageSender.Send(message, topic);
 
             return true;
         }

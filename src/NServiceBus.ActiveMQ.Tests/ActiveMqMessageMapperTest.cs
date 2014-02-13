@@ -6,6 +6,9 @@
     using Apache.NMS.Util;
     using FluentAssertions;
     using Moq;
+
+    using NServiceBus.Transports.ActiveMQ.SessionFactories;
+
     using NUnit.Framework;
     using Serialization;
 
@@ -15,12 +18,11 @@
         private ActiveMqMessageMapper testee;
         private Mock<ISession> session;
         private Mock<IMessageTypeInterpreter> messageTypeInterpreter;
-
         private Mock<IActiveMqMessageDecoderPipeline> decoderPipeline;
-
         private Mock<IActiveMqMessageEncoderPipeline> encoderPipeline;
 
         Mock<IMessageSerializer> serializer;
+
 
         [SetUp]
         public void SetUp()
@@ -41,7 +43,7 @@
 
             var transportMessage = CreateTransportMessage();
 
-            testee.CreateJmsMessage(transportMessage, session.Object);
+            testee.CreateJmsMessage(transportMessage, session.Object, string.Empty);
 
             encoderPipeline.Verify(e => e.Encode(transportMessage, session.Object));
         }
@@ -54,7 +56,7 @@
             var transportMessage = CreateTransportMessage();
             transportMessage.Headers[Headers.EnclosedMessageTypes] = typeof(string).AssemblyQualifiedName;
 
-            var message = testee.CreateJmsMessage(transportMessage, session.Object);
+            var message = testee.CreateJmsMessage(transportMessage, session.Object, string.Empty);
 
             message.NMSType.Should().Be("System.String");
         }
@@ -67,7 +69,7 @@
             var transportMessage = CreateTransportMessage();
             transportMessage.Headers[Headers.EnclosedMessageTypes] = string.Format("{0};{1}", typeof(string).AssemblyQualifiedName, typeof(int).AssemblyQualifiedName);
 
-            var message = testee.CreateJmsMessage(transportMessage, session.Object);
+            var message = testee.CreateJmsMessage(transportMessage, session.Object, string.Empty);
 
             message.NMSType.Should().Be("System.String");
         }
@@ -155,6 +157,36 @@
         }
 
         [Test]
+        public void CreateTransportMessage_IfEnclosedMessageTypesIsDefined_AndMessageIdStartsNotWithClientId_ShouldNotAssignIt()
+        {
+            var EnclosedMessageTypes = typeof(string).AssemblyQualifiedName;
+
+            var message = CreateTextMessage(string.Empty);
+            message.Properties[Headers.EnclosedMessageTypes] = EnclosedMessageTypes;
+            message.NMSMessageId = "1";
+            message.Properties[ActiveMqMessageMapper.ProducerIdHeader] = "3";
+
+            var result = testee.CreateTransportMessage(message);
+
+            result.Headers.Should().NotContainKey(Headers.EnclosedMessageTypes);
+        }
+
+        [Test]
+        public void CreateTransportMessage_IfEnclosedMessageTypesIsDefined_AndMessageIdStartsWithClientId_ShouldAssignIt()
+        {
+            var EnclosedMessageTypes = typeof(string).AssemblyQualifiedName;
+
+            var message = CreateTextMessage(string.Empty);
+            message.Properties[Headers.EnclosedMessageTypes] = EnclosedMessageTypes;
+            message.NMSMessageId = "1:2";
+            message.Properties[ActiveMqMessageMapper.ProducerIdHeader] = "1";
+
+            var result = testee.CreateTransportMessage(message);
+
+            result.Headers[Headers.EnclosedMessageTypes].Should().Be(EnclosedMessageTypes);
+        }
+        
+        [Test]
         public void CreateTransportMessage_IfEnclosedMessageTypesIsNotDefined_ShouldAssignInterpretedTypeFromJmsMessage()
         {
             var ExpectedEnclosedMessageTypes = typeof(string).AssemblyQualifiedName;
@@ -180,7 +212,7 @@
 
             result.Headers.Should().NotContainKey(Headers.EnclosedMessageTypes);
         }
-        
+
         [Test]
         public void CreateTransportMessage_ShouldAssignCorrelationId()
         {

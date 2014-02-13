@@ -4,7 +4,7 @@ namespace NServiceBus.Transports.ActiveMQ
 
     public interface IActiveMqMessageMapper
     {
-        IMessage CreateJmsMessage(TransportMessage message, ISession session);
+        IMessage CreateJmsMessage(TransportMessage message, ISession session, string producerId);
 
         TransportMessage CreateTransportMessage(IMessage message);
     }

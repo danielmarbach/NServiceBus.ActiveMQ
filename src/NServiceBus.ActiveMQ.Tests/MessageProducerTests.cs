@@ -22,7 +22,7 @@
             activeMqMessageMapperMock = new Mock<IActiveMqMessageMapper>();
             destinationEvaluatorMock = new Mock<IDestinationEvaluator>();
 
-            testee = new MessageProducer(
+            testee = new TestableMessageProducer(
                 sessionFactoryMock.Object, 
                 activeMqMessageMapperMock.Object,
                 destinationEvaluatorMock.Object);
@@ -33,8 +33,7 @@
         {
             const string Reason = "TheExceptionReason";
             var sessionMock = SetupCreateSession();
-            activeMqMessageMapperMock.Setup(mm => mm
-                                                           .CreateJmsMessage(It.IsAny<TransportMessage>(), sessionMock.Object))
+            activeMqMessageMapperMock.Setup(mm => mm.CreateJmsMessage(It.IsAny<TransportMessage>(), sessionMock.Object, It.IsAny<string>()))
                 .Throws(new Exception(Reason));
 
             Action action = () => testee.SendMessage(new TransportMessage(), string.Empty, string.Empty);
@@ -70,23 +69,6 @@
             producerMock.Verify(p => p.Send(destination, jmsMessage));
         }
 
-        [Test, Ignore("Why do we need this daniel/remo")]
-        public void WhenSendingAMessage_ThenAssignTransportMessageIdToJmsMessageId()
-        {
-            const string Destination = "TheDestination";
-            const string DestinationPrefix = "TheDestinationPrefix";
-
-            var message = new TransportMessage();
-            var sessionMock = SetupCreateSession();
-            SetupCreateProducer(sessionMock);
-            var jmsMessage = SetupCreateJmsMessageFromTransportMessage(message, sessionMock.Object);
-            SetupGetDestination(sessionMock, Destination, DestinationPrefix);
-
-            testee.SendMessage(message, Destination, DestinationPrefix);
-
-            message.Id.Should().BeEquivalentTo(jmsMessage.NMSMessageId);
-        }
-
         private IDestination SetupGetDestination(Mock<ISession> sessionMock, string Destination, string DestinationPrefix)
         {
             var destination = new Mock<IDestination>().Object;
@@ -108,7 +90,7 @@
             var jmsMessage = new Mock<IMessage>().SetupAllProperties().Object;
             jmsMessage.NMSMessageId = Guid.NewGuid().ToString();
 
-            activeMqMessageMapperMock.Setup(m => m.CreateJmsMessage(message, session)).Returns(jmsMessage);
+            activeMqMessageMapperMock.Setup(m => m.CreateJmsMessage(message, session, TestableMessageProducer.ProducerId)).Returns(jmsMessage);
             return jmsMessage;
         }
 
@@ -117,6 +99,21 @@
             var producerMock = new Mock<IMessageProducer>();
             sessionMock.Setup(s => s.CreateProducer()).Returns(producerMock.Object);
             return producerMock;
+        }
+
+        private class TestableMessageProducer : MessageProducer
+        {
+            public const string ProducerId = "ProducerId";
+
+            public TestableMessageProducer(ISessionFactory sessionFactory, IActiveMqMessageMapper activeMqMessageMapper, IDestinationEvaluator destinationEvaluator)
+                : base(sessionFactory, activeMqMessageMapper, destinationEvaluator)
+            {
+            }
+
+            protected override string GetProducerId(IMessageProducer producer)
+            {
+                return ProducerId;
+            }
         }
     }
 }

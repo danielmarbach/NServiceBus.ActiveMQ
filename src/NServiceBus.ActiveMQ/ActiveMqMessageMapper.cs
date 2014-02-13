@@ -5,21 +5,27 @@ namespace NServiceBus.Transports.ActiveMQ
     using System.Linq;
     using Apache.NMS;
     using Apache.NMS.Util;
+
+    using NServiceBus.Transports.ActiveMQ.SessionFactories;
+
     using Serialization;
 
     public class ActiveMqMessageMapper : IActiveMqMessageMapper
     {
         public const string ErrorCodeKey = "ErrorCode";
+        public const string ProducerIdHeader = "NServiceBus.ActiveMq.ProducerId";
 
         readonly IMessageSerializer serializer;
 
         private readonly IMessageTypeInterpreter messageTypeInterpreter;
-
         private readonly IActiveMqMessageEncoderPipeline encoderPipeline;
-
         private readonly IActiveMqMessageDecoderPipeline decoderPipeline;
 
-        public ActiveMqMessageMapper(IMessageSerializer serializer, IMessageTypeInterpreter messageTypeInterpreter, IActiveMqMessageEncoderPipeline encoderPipeline, IActiveMqMessageDecoderPipeline decoderPipeline)
+        public ActiveMqMessageMapper(
+            IMessageSerializer serializer, 
+            IMessageTypeInterpreter messageTypeInterpreter, 
+            IActiveMqMessageEncoderPipeline encoderPipeline, 
+            IActiveMqMessageDecoderPipeline decoderPipeline)
         {
             this.serializer = serializer;
             this.messageTypeInterpreter = messageTypeInterpreter;
@@ -27,8 +33,9 @@ namespace NServiceBus.Transports.ActiveMQ
             this.decoderPipeline = decoderPipeline;
         }
 
-        public IMessage CreateJmsMessage(TransportMessage message, ISession session)
+        public IMessage CreateJmsMessage(TransportMessage message, ISession session, string producerId)
         {
+            message.Headers[ProducerIdHeader] = producerId;
             var jmsmessage = encoderPipeline.Encode(message, session);
 
             // We only assign the correlation id because the message id is chosen by the broker.
@@ -62,8 +69,12 @@ namespace NServiceBus.Transports.ActiveMQ
         public TransportMessage CreateTransportMessage(IMessage message)
         {
             var headers = ExtractHeaders(message);
-
             var transportMessage = new TransportMessage(message.NMSMessageId, headers);
+            if (transportMessage.Headers.ContainsKey(ProducerIdHeader) &&
+                !message.NMSMessageId.StartsWith(transportMessage.Headers[ProducerIdHeader]))
+            {
+                this.DiscardNServiceBusHeadersCopiedByNativeClient(transportMessage);
+            }
 
             decoderPipeline.Decode(transportMessage, message);
 
@@ -104,6 +115,37 @@ namespace NServiceBus.Transports.ActiveMQ
             }
 
             return transportMessage;
+        }
+
+        private void DiscardNServiceBusHeadersCopiedByNativeClient(TransportMessage transportMessage)
+        {
+            transportMessage.Headers.Remove(Headers.ContentType);
+            transportMessage.Headers.Remove(Headers.ControlMessageHeader);
+            transportMessage.Headers.Remove(Headers.CorrelationId);
+            transportMessage.Headers.Remove(Headers.DestinationSites);
+            transportMessage.Headers.Remove(Headers.EnclosedMessageTypes);
+            transportMessage.Headers.Remove(Headers.IsSagaTimeoutMessage);
+            transportMessage.Headers.Remove(Headers.MessageId);
+            transportMessage.Headers.Remove(Headers.NServiceBusVersion);
+            transportMessage.Headers.Remove(Headers.OriginatingAddress);
+            transportMessage.Headers.Remove(Headers.OriginatingEndpoint);
+            transportMessage.Headers.Remove(Headers.OriginatingMachine);
+            transportMessage.Headers.Remove(Headers.OriginatingSagaId);
+            transportMessage.Headers.Remove(Headers.OriginatingSagaType);
+            transportMessage.Headers.Remove(Headers.OriginatingSite);
+            transportMessage.Headers.Remove(Headers.ProcessingEnded);
+            transportMessage.Headers.Remove(Headers.ProcessingEndpoint);
+            transportMessage.Headers.Remove(Headers.ProcessingMachine);
+            transportMessage.Headers.Remove(Headers.ProcessingStarted);
+            transportMessage.Headers.Remove(Headers.RelatedTo);
+            transportMessage.Headers.Remove(Headers.Retries);
+            transportMessage.Headers.Remove(Headers.ReturnMessageErrorCodeHeader);
+            transportMessage.Headers.Remove(Headers.RouteTo);
+            transportMessage.Headers.Remove(Headers.SagaId);
+            transportMessage.Headers.Remove(Headers.SagaType);
+            transportMessage.Headers.Remove(Headers.SubscriptionMessageType);
+            transportMessage.Headers.Remove(Headers.TimeSent);
+            transportMessage.Headers.Remove(Headers.WindowsIdentityName);
         }
 
         static Dictionary<string,string> ExtractHeaders(IMessage message)

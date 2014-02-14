@@ -12,6 +12,7 @@ namespace NServiceBus.Transports.ActiveMQ.Receivers
     using NServiceBus.Features;
     using NServiceBus.Logging;
     using NServiceBus.Serialization;
+    using NServiceBus.Transports.ActiveMQ.Senders;
 
     public abstract class MessageReceiver : IMessageReceiver
     {
@@ -21,7 +22,7 @@ namespace NServiceBus.Transports.ActiveMQ.Receivers
         private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
         protected Func<ISession, IMessageConsumer> createConsumer;
         protected Action<TransportMessage, Exception> endProcessMessage;
-        private Address endpointAddress;
+        private ActiveMqAddress endpointAddress;
         private MTATaskScheduler scheduler;
         protected TransactionOptions transactionOptions;
         private Func<TransportMessage, bool> tryProcessMessage;
@@ -37,7 +38,7 @@ namespace NServiceBus.Transports.ActiveMQ.Receivers
             this.messageMapper = new ActiveMqMessageMapper(serializer, new MessageTypeInterpreter(), new ActiveMqMessageEncoderPipeline(), new ActiveMqMessageDecoderPipeline());
         }
 
-        public void Init(Address address, Unicast.Transport.TransactionSettings settings, Func<TransportMessage, bool> tryProcessMessage,
+        public void Init(ActiveMqAddress address, Unicast.Transport.TransactionSettings settings, Func<TransportMessage, bool> tryProcessMessage,
                          Action<TransportMessage, Exception> endProcessMessage, Func<ISession, IMessageConsumer> createConsumer)
         {
             this.endpointAddress = address;

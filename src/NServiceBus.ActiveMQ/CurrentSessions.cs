@@ -31,30 +31,14 @@
             return null;
         }
 
-        ~CurrentSessions()
-        {
-            this.Dispose(false);
-        }
-
         public void Dispose()
         {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
+            // Injected during compile time
         }
 
-        private void Dispose(bool disposing)
+        private void DisposeManager()
         {
-            if (this.disposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                this.sessionsPerThread.Dispose();
-            }
-
-            this.disposed = true;
+            this.sessionsPerThread.Dispose();
         }
     }
 }

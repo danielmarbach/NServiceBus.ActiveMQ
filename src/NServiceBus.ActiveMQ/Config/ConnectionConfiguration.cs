@@ -4,7 +4,7 @@ namespace NServiceBus.Features
     using System.Security.Cryptography;
     using System.Text;
 
-    internal class ConnectionConfiguration
+    public class ConnectionConfiguration
     {
         private const string DefaultServerUrl = "activemq:tcp://localhost:61616";
 

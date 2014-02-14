@@ -16,7 +16,7 @@ namespace NServiceBus.Transports.ActiveMQ.Senders
 
         public CurrentSessions CurrentSessions { get; set; }
 
-        public override void Send(TransportMessage message, Address address)
+        protected override void InternalSend(TransportMessage message, ActiveMqAddress address)
         {
             var hasExistingSession = true;
             var session = this.CurrentSessions.GetSession();
@@ -30,7 +30,7 @@ namespace NServiceBus.Transports.ActiveMQ.Senders
             try
             {
 
-                var destination = SessionUtil.GetDestination(session, Address.Parse(string.Format("queue://{0}", address.Queue)).ToString());
+                var destination = address.GetDestination(session);
                 using (var producer = session.CreateProducer(destination))
                 {
                     var nativeMessage = this.CreateNativeMessage(message, session, producer);

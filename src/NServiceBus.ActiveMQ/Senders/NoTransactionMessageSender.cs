@@ -2,9 +2,6 @@ namespace NServiceBus.Transports.ActiveMQ.Senders
 {
     using System.Transactions;
 
-    using Apache.NMS;
-    using Apache.NMS.Util;
-
     using NServiceBus.Serialization;
 
     public class NoTransactionMessageSender : MessageSender
@@ -14,11 +11,11 @@ namespace NServiceBus.Transports.ActiveMQ.Senders
         {
         }
 
-        public override void Send(TransportMessage message, Address address)
+        protected override void InternalSend(TransportMessage message, ActiveMqAddress address)
         {
             using (var session = this.CreateSession())
             {
-                var destination = SessionUtil.GetDestination(session, Address.Parse(string.Format("queue://{0}", address.Queue)).ToString());
+                var destination = address.GetDestination(session);
                 using (var producer = session.CreateProducer(destination))
                 {
                     var nativeMessage = this.CreateNativeMessage(message, session, producer);

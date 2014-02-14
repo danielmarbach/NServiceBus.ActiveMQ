@@ -99,7 +99,8 @@
             NServiceBus.Configure.Component<ActiveMqQueueCreator>(DependencyLifecycle.InstancePerCall);
             NServiceBus.Configure.Component<DequeueStrategy>(DependencyLifecycle.InstancePerCall)
                        .ConfigureProperty(p => p.PurgeOnStartup, ConfigurePurging.PurgeRequested)
-                       .ConfigureProperty(p => p.Settings, settings);
+                       .ConfigureProperty(p => p.Settings, connectionConfiguration);
+            NServiceBus.Configure.Component<TopicEvaluator>(DependencyLifecycle.InstancePerCall);
         }
 
         protected override void InternalConfigure(Configure config)

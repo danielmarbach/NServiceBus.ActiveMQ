@@ -4,9 +4,11 @@ namespace NServiceBus.Transports.ActiveMQ.Receivers
 
     using Apache.NMS;
 
+    using NServiceBus.Transports.ActiveMQ.Senders;
+
     public interface IMessageReceiver
     {
-        void Init(Address address, Unicast.Transport.TransactionSettings settings, Func<TransportMessage, bool> tryProcessMessage,
+        void Init(ActiveMqAddress address, Unicast.Transport.TransactionSettings settings, Func<TransportMessage, bool> tryProcessMessage,
                   Action<TransportMessage, Exception> endProcessMessage, Func<ISession, IMessageConsumer> createConsumer);
 
         void Start(int maximumConcurrencyLevel);

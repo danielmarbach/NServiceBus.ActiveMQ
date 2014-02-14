@@ -19,35 +19,19 @@
             this.connectionFactory = connectionFactory;
         }
 
-        ~ConnectionFactory()
-        {
-            Dispose(false);
-        }
-
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            // Injected during compile time
         }
 
-        private void Dispose(bool disposing)
+        private void DisposeManaged()
         {
-            if (disposed)
+            if (connection != null)
             {
-                return;
+                connection.Stop();
+                connection.Close();
+                connection.Dispose();
             }
-
-            if (disposing)
-            {
-                if (connection != null)
-                {
-                    connection.Stop();
-                    connection.Close();
-                    connection.Dispose();
-                }
-            }
-
-            disposed = true;
         }
 
         public IConnection CreateNewConnection()

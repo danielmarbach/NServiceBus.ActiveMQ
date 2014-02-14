@@ -2,9 +2,9 @@ namespace NServiceBus.Transports.ActiveMQ.Senders
 {
     using System.Transactions;
 
+    using Apache.NMS;
     using Apache.NMS.Util;
 
-    using NServiceBus.Features;
     using NServiceBus.Serialization;
 
     public class DistributedTransactionMessageSender : MessageSender
@@ -16,7 +16,7 @@ namespace NServiceBus.Transports.ActiveMQ.Senders
 
         public CurrentSessions CurrentSessions { get; set; }
 
-        public override void Send(TransportMessage message, Address address)
+        protected override void InternalSend(TransportMessage message, ActiveMqAddress address)
         {
             var hasExistingSession = true;
             var session = this.CurrentSessions.GetSession();
@@ -29,7 +29,7 @@ namespace NServiceBus.Transports.ActiveMQ.Senders
 
             try
             {
-                var destination = SessionUtil.GetDestination(session, address.Queue);
+                var destination = address.GetDestination(session);
                 using (var producer = session.CreateProducer(destination))
                 {
                     var nativeMessage = this.CreateNativeMessage(message, session, producer);
@@ -57,6 +57,36 @@ namespace NServiceBus.Transports.ActiveMQ.Senders
                     session.Dispose();
                 }
             }
+        }
+    }
+
+    public class ActiveMqAddress
+    {
+        readonly Address address;
+
+        public ActiveMqAddress(Address address)
+        {
+            this.address = address;
+        }
+
+        public IDestination GetDestination(ISession session)
+        {
+            return SessionUtil.GetDestination(session, address.Queue);
+        }
+
+        public override string ToString()
+        {
+            return this.address.ToString();
+        }
+
+        public override int GetHashCode()
+        {
+            return this.address.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.address.Equals(obj);
         }
     }
 }

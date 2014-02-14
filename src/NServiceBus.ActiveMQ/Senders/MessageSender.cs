@@ -15,7 +15,13 @@ namespace NServiceBus.Transports.ActiveMQ.Senders
 
         public ConnectionFactory ConnectionFactory { get; set; }
 
-        public abstract void Send(TransportMessage message, Address address);
+        public void Send(TransportMessage message, Address address)
+        {
+            var destinationAddress = new ActiveMqAddress(address);
+            this.InternalSend(message, destinationAddress);
+        }
+
+        protected abstract void InternalSend(TransportMessage message, ActiveMqAddress address);
 
         protected ISession CreateSession()
         {

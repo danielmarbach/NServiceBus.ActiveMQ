@@ -89,10 +89,17 @@
                     new NMSConnectionFactory(connectionConfiguration.ServerUrl)
                         {
                             AcknowledgementMode = AcknowledgementMode.AutoAcknowledge,
+                            AsyncSend = true,
                         },
                         DependencyLifecycle.SingleInstance);
                 NServiceBus.Configure.Component<NoTransactionMessageSender>(DependencyLifecycle.InstancePerCall);
                 NServiceBus.Configure.Component<NoTransactionMessageReceiver>(DependencyLifecycle.InstancePerCall);
+
+                NServiceBus.Configure.Component<ActiveMQMessageDefer>(DependencyLifecycle.InstancePerCall);
+                NServiceBus.Configure.Component<ActiveMqSchedulerManagement>(DependencyLifecycle.SingleInstance)
+                      .ConfigureProperty(p => p.Disabled, false);
+                NServiceBus.Configure.Component<ActiveMqSchedulerManagementJobProcessor>(DependencyLifecycle.SingleInstance);
+                NServiceBus.Configure.Component<ActiveMqSchedulerManagementCommands>(DependencyLifecycle.SingleInstance);
             }
 
             NServiceBus.Configure.Component<ActiveMqMessagePublisher>(DependencyLifecycle.InstancePerCall);

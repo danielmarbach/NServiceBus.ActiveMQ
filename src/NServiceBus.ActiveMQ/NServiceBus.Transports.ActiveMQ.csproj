@@ -39,10 +39,6 @@
     <NoWarn>1591,1572,1571,1573,1587,1570</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="Fody.targets" />
-    <None Include="FodyWeavers.xml">
-      <SubType>Designer</SubType>
-    </None>
     <Reference Include="Apache.NMS">
       <HintPath>..\packages\Apache.NMS\lib\net40\Apache.NMS.dll</HintPath>
     </Reference>
@@ -72,16 +68,21 @@
   <ItemGroup>
     <Compile Include="ActiveMQ.cs" />
     <Compile Include="ActiveMqMessageDecoderPipeline.cs" />
+    <Compile Include="ActiveMQMessageDefer.cs" />
     <Compile Include="ActiveMqMessageEncoderPipeline.cs" />
     <Compile Include="ActiveMqMessagePublisher.cs" />
     <Compile Include="ActiveMqSchedulerManagement.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ActiveMqSchedulerManagementCommands.cs" />
+    <Compile Include="ActiveMqSchedulerManagementJob.cs" />
+    <Compile Include="ActiveMqSchedulerManagementJobProcessor.cs" />
     <Compile Include="Config\ConnectionConfiguration.cs" />
     <Compile Include="Config\ConnectionStringBuilder.cs" />
     <Compile Include="Config\DequeueStrategy.cs" />
     <Compile Include="ConnectionFactory.cs" />
     <Compile Include="CurrentSessions.cs" />
+    <Compile Include="IActiveMqSchedulerManagementCommands.cs" />
     <Compile Include="Receivers\ActiveMqPurger.cs" />
     <Compile Include="ActiveMqQueueCreator.cs" />
     <Compile Include="Receivers\DistributedTransactionMessageReceiver.cs" />
@@ -110,6 +111,8 @@
     <Compile Include="MessageExtensions.cs" />
     <Compile Include="MessageTypeInterpreter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScheduledMessage.cs" />
+    <Compile Include="Senders\ActiveMqAddress.cs" />
     <Compile Include="Senders\DistributedTransactionMessageSender.cs" />
     <Compile Include="Senders\LocalTransactionMessageSender.cs" />
     <Compile Include="Senders\MessageSender.cs" />
@@ -125,7 +128,8 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="Fody.targets" />
+  <!--<Import Project="Fody.targets" />
   <Import Project="$(SolutionDir)..\BuildSupport\RippleRestoreTask.targets" />
+  <Import Project="$(SolutionDir)..\BuildSupport\RippleRestoreTask.targets" Condition="Exists('$(SolutionDir)..\BuildSupport\RippleRestoreTask.targets')" />-->
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 </Project>
